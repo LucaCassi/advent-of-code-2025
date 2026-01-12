@@ -1,30 +1,48 @@
 from pathlib import Path
 
+
 def compute_sum_accessible_rolls(folder_name: str, file_name: str) -> int:
     path = Path(folder_name)/file_name
+
     sum = 0
+
     with path.open("r", encoding="utf-8") as f:
         grid = [list(line.strip()) for line in f if line.strip()]
+        # read grid as a 2D array of characters, ignoring empty lines; I need a list to modify it
+
         rows = len(grid)
         cols = len(grid[0])
-        adjacent_offsets = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
+
+        adjacent_offsets = [
+            (-1, -1), (-1,  0), (-1,  1),
+            ( 0, -1),           ( 0,  1),
+            ( 1, -1), ( 1,  0), ( 1,  1)
+                           ]                            # relative offsets for all 8 neighboring cells
         
-        keep_trying = 1
+        keep_trying = 1                                 # flag to continue iterative elimination
+
         while (keep_trying != 0):
             keep_trying = 0
+
             for r in range(rows):
                 for c in range(cols):
-                    if grid[r][c] != '@': 
-                        continue
+                    if grid[r][c] != '@':
+                        continue                        # skip non-roll cells
+
                     close = 0
+
                     for row_offset, col_offset in adjacent_offsets:
-                        adjacent_row, adjacent_col = r+row_offset, c+col_offset
-                        if 0 <= adjacent_row < rows and 0 <= adjacent_col < cols and grid[adjacent_row][adjacent_col] == '@':
+                        adjacent_row = r + row_offset
+                        adjacent_col = c + col_offset
+
+                        if (0 <= adjacent_row < rows and 0 <= adjacent_col < cols and grid[adjacent_row][adjacent_col] == '@' ):
                             close += 1
+
                     if close < 4:
                         grid[r][c] = '.'
                         sum += 1
-                        keep_trying = 1
+                        keep_trying = 1                 # trigger another full scan
+
     return sum
 
 

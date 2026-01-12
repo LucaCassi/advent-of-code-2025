@@ -1,21 +1,28 @@
-from pathlib import Path
+from pathlib import Path  # replacement for os.path
+
 
 def compute_sum_of_invalid_IDs(folder_name: str, file_name: str) -> int:
     path = Path(folder_name) / file_name
-    full_text = path.read_text(encoding="utf-8").strip()
+
+    full_text = path.read_text(encoding="utf-8").strip()  # read entire file as a single string
     string_id_list = full_text.split(",")
-    sum_of_invalid_IDs = 0
-    for string_interval in string_id_list:
-        lo_hi = string_interval.split("-")
+
+    sum_of_invalid_IDs = 0                                 # accumulator for invalid IDs
+
+    for string_interval in string_id_list:                 # (e.g. "123-456")
+        lo_hi = string_interval.split("-")                 # split lower and upper bound
         lowest_number = int(lo_hi[0])
         highest_number = int(lo_hi[1])
-        for i in range(lowest_number, highest_number + 1):
+
+        for i in range(lowest_number, highest_number + 1):  # inclusive range
             string = str(i)
             n = len(string)
-            if n % 2 == 0:
+
+            if n % 2 == 0:                                  # only even-length numbers can be split evenly
                 half = n // 2
                 if string[half:] == string[:half]:
                     sum_of_invalid_IDs += i
+
     return sum_of_invalid_IDs
 
 

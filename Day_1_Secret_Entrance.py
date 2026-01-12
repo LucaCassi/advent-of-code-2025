@@ -1,9 +1,9 @@
-from pathlib import Path
+from pathlib import Path                              # I try this one instead of os.path
 
 def compute_password(folder_name: str, file_name: str) -> int:
     path = Path(folder_name) / file_name
 
-    pos = 50
+    pos = 50                                          # initial position
     counter_of_zeros = 0
 
     with path.open("r", encoding="utf-8") as f:
@@ -11,21 +11,21 @@ def compute_password(folder_name: str, file_name: str) -> int:
             line = raw.strip()
 
             op = line[0]
-            if op not in ("L", "R"):
+            if op not in ("L", "R"):                  # robustness (not strictly required)
                 raise ValueError(f"Line {line_num}: invalid character: {op!r}")
 
             # do not assume the number of characters for the number
             try:
                 value = int(line[1:])
-            except ValueError as e:
+            except ValueError as e:                   # robustness (not strictly required, we can assume to always have only digits here)
                 raise ValueError(f"Line {line_num}: invalid number: {line[1:]!r}") from e
 
             if op == "L":
                 pos -= value
-            else:  # op == "R":
+            else:                                     # op == "R":
                 pos += value
 
-            pos %= 100  # between 0 and 99
+            pos %= 100                                # between 0 and 99
 
             if pos == 0:
                 counter_of_zeros += 1
